@@ -1,0 +1,11 @@
+﻿
+@model Employee
+<h1>Are You Sure You Want To Delete This Employee !?</h1>
+<br />
+<br />
+
+<form asp-action="Delete">
+    <partial name="PartialViews/DetailsDeleteEmployeePartialView"></partial>
+<input type="submit" value="Delete" class="btn btn-danger mt-5"/>
+<a asp-action="Index" class="btn btn-light mt-5">Cancel</a>
+</form>

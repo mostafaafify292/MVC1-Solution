@@ -1,0 +1,11 @@
+﻿
+@model Department
+<h1>Are You Sure You Want To Delete This Department !?</h1>
+<br />
+<br />
+
+<form asp-action="Delete" asp-route-id="@Model.id">
+    <partial name="PartialView/DetailsDeleteDepartmentPartialView"></partial>
+<input type="submit" value="Delete" class="btn btn-danger mt-5"/>
+<a asp-action="Index" class="btn btn-light mt-5">Cancel</a>
+</form>
