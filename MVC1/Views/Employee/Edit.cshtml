@@ -1,10 +1,10 @@
-﻿@model Employee
+﻿@model EmployeeViewModel
 
 <h1> Edit Employee</h1>
 <br />
 <br />
 
-<form asp-action="Edit" >
+<form asp-action="Edit" enctype="multipart/form-data" >
     
     <partial name="PartialViews/CreateEditEmployeePartialView"></partial>
     <input type="submit" value="Edit" class="btn btn-primary mt-5" />

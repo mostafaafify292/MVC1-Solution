@@ -1,44 +1,57 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using MVC__BLL_.Interfacies;
+using MVC1.viewModels;
 using MVC1__DAL_.Models;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace MVC1.Controllers 
 {
-
+    
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _departmentRepository;
+       
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _env;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(IDepartmentRepository repository, IWebHostEnvironment env)
+        public DepartmentController(IUnitOfWork unitOfWork, IWebHostEnvironment env ,IMapper mapper)
         {
-            _departmentRepository = repository;    
+           
+            _unitOfWork = unitOfWork;
             _env = env;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
-            var departments = _departmentRepository.GetAll();
-            return View(departments);
+
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            var mappeddept = _mapper.Map<IEnumerable<Department>, IEnumerable<DepartmentViewModel>>(departments);
+            return View(mappeddept);
         }
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Department department)
+        public IActionResult Create(DepartmentViewModel departmentVm)
         {
             if (ModelState.IsValid)
             {
-                var count = _departmentRepository.Add(department);
+                var mappeddept = _mapper.Map<DepartmentViewModel,Department>(departmentVm);
+                _unitOfWork.DepartmentRepository.Add(mappeddept);
+                var count = _unitOfWork.Complete();
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
                 }
             }
-            return View(department);
+            return View(departmentVm);
         }
         [HttpGet]
         public IActionResult Details(int? id)
@@ -47,11 +60,12 @@ namespace MVC1.Controllers
             {
                 return BadRequest(); //400
             }
-            var department = _departmentRepository.GetById(id.Value);
+            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
+            var mappeddept = _mapper.Map<Department, DepartmentViewModel>(department);
             if (department == null)
                 return NotFound();
             else
-                return View(department);
+                return View(mappeddept);
 
         }
         [HttpGet]
@@ -61,27 +75,31 @@ namespace MVC1.Controllers
             {
                 return BadRequest(); //400
             }
-            var department = _departmentRepository.GetById(id.Value);
+            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
+            var mappeddept = _mapper.Map<Department, DepartmentViewModel>(department);
             if (department == null)
                 return NotFound();
             else
-                return View(department);
+                return View(mappeddept);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Department department)
+        public IActionResult Edit([FromRoute] int id, DepartmentViewModel departmentVm)
         {
-            if (id != department.id)
+            if (id != departmentVm.id)
             {
                 return BadRequest();
             }
             if (!ModelState.IsValid)
             {
-                return View(department);
+
+                return View(departmentVm);
             }
             try
             {
-                _departmentRepository.Update(department);
+                var mappeddept = _mapper.Map<DepartmentViewModel, Department>(departmentVm);
+                _unitOfWork.DepartmentRepository.Update(mappeddept);
+                _unitOfWork.Complete();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -97,7 +115,7 @@ namespace MVC1.Controllers
                     ModelState.AddModelError(string.Empty, "An Error Occured During Update Department");
                 }
             }
-            return View(department);
+            return View(departmentVm);
 
         }
         [HttpGet]
@@ -107,19 +125,22 @@ namespace MVC1.Controllers
             {
                 return BadRequest(); //400
             }
-            var department = _departmentRepository.GetById(id.Value);
+            var department = _unitOfWork.DepartmentRepository.GetById(id.Value);
+            var mappeddept = _mapper.Map<Department, DepartmentViewModel>(department);
             if (department == null)
                 return NotFound();
             else
-                return View(department);
+                return View(mappeddept);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(Department department)
+        public IActionResult Delete(DepartmentViewModel departmentVm)
         {
             try
             {
-                _departmentRepository.Delete(department);
+                var mappeddept = _mapper.Map<DepartmentViewModel, Department>(departmentVm);
+                _unitOfWork.DepartmentRepository.Delete(mappeddept);
+                 _unitOfWork.Complete();
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -134,7 +155,7 @@ namespace MVC1.Controllers
                 }
 
             }
-            return View(department);
+            return View(departmentVm);
         }
     }
 

@@ -21,6 +21,10 @@ namespace MVC1__DAL_.Data.Configuration
                    (Gender) => (Gender).ToString(),
                    (genderAsString) => (Gender)Enum.Parse(typeof(Gender), genderAsString, true)
                    );
+            builder.Property(p => p.Name)
+                   .IsRequired(true)
+                   .HasMaxLength(50);
+           
         }
     }
 }

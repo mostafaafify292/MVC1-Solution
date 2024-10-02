@@ -19,6 +19,9 @@ namespace MVC__BLL_.Repositories
             _dbContext = dbContext;
         }
 
-       
+        public IQueryable<Employee> GetEmployeeByName(string name)
+        {
+            return _dbContext.employees.Where(e => e.Name.ToLower() == name).Include(e=>e.department);
+        }
     }
 }

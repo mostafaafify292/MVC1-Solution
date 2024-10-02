@@ -1,13 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MVC__BLL_.Interfacies;
 using MVC__BLL_.Repositories;
+using MVC1.Helper;
 using MVC1__DAL_.Data;
+using MVC1__DAL_.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +32,24 @@ namespace MVC1
         {
             services.AddControllersWithViews();
             services.AddDbContext<AppDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefultConnection")));
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(M=>M.AddProfile(new MappingProfile()));
+            //services.AddScoped<UserManager<ApplicationUser>>();
+            //services.AddScoped<SignInManager<ApplicationUser>>();
+            //services.AddScoped<RoleManager<IdentityRole>>();
+            services.AddIdentity<ApplicationUser , IdentityRole>(
+                config => 
+                {
+                    //config.Password.RequiredUniqueChars = 2;
+                    //config.Password.RequireDigit = true;
+                    //config.Password.RequireLowercase = true;
+                    //config.Password.RequireUppercase = true;
+                    config.Password.RequireNonAlphanumeric = false;
+                    //config.User.RequireUniqueEmail = true;
+                    //config.Lockout.MaxFailedAccessAttempts = 3;
+                    config.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1 );
+                }  
+                ).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

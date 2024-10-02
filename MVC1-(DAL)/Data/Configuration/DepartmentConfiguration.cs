@@ -15,6 +15,14 @@ namespace MVC1__DAL_.Data.Configuration
         {
             //fluent APIs
             builder.Property(d => d.id).UseIdentityColumn(10, 10);
+            builder.HasMany(D => D.Employees)
+                   .WithOne(E => E.department)
+                   .OnDelete(DeleteBehavior.Cascade);
+            builder.Property(d => d.Code)
+                   .IsRequired();
+            builder.Property(d => d.Name)
+                   .IsRequired();
+         
         }
     }
 }

@@ -19,32 +19,37 @@ namespace MVC__BLL_.Repositories
         }
 
 
-        public int Add(T item)
+        public void Add(T item)
         {
             _DbContext.Set<T>().Add(item);
-            return _DbContext.SaveChanges();
         }
 
-        public int Delete(T item)
+        public void Delete(T item)
         {
             _DbContext.Set<T>().Remove(item);
-            return _DbContext.SaveChanges();
         }
 
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return (IEnumerable<T>)_DbContext.employees.Include(d => d.department).AsNoTracking().ToList();
+            }
             return _DbContext.Set<T>().AsNoTracking().ToList();
         }
 
         public T GetById(int id)
         {
+            if (typeof(T) == typeof(Employee))
+            {             
+                return _DbContext.employees.Include(e => e.department).FirstOrDefault(e=>e.id==id) as T;
+            }
             return _DbContext.Set<T>().Find(id);
         }
 
-        public int Update(T item)
+        public void Update(T item)
         {
             _DbContext.Set<T>().Update(item);
-            return _DbContext.SaveChanges();
         }
     }
 }

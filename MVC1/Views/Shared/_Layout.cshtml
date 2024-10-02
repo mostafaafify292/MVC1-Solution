@@ -31,11 +31,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark " asp-area="" asp-controller="Employee" asp-action="Index">Employee</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark ml-0" asp-area="" asp-controller="Users" asp-action="Index">User</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark ml-0" asp-area="" asp-controller="Account" asp-action="SignOut">SignOut</a>
+                        </li>
+                     
                     </ul>
                 </div>
             </div>
         </nav>
-    </header>
+    </header>   
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

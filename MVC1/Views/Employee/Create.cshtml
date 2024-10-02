@@ -1,12 +1,10 @@
-﻿
-
-@model Employee
+﻿@model EmployeeViewModel
 
 <h1>Create New Employee</h1>
 <br />
 <br />
 
-<form asp-action="Create">
+<form asp-action="Create" enctype="multipart/form-data">
 
     <partial name="PartialViews/CreateEditEmployeePartialView"></partial>
 
